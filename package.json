@@ -6,6 +6,7 @@
     "@heroicons/react": "^2.0.18",
     "@langchain/core": "^0.1.63",
     "@langchain/langgraph": "^0.0.8",
+    "@langchain/openai": "^0.4.4",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "axios": "^1.7.9",
