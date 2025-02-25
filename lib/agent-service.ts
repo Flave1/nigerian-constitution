@@ -1,11 +1,15 @@
-import { ChatOpenAI } from "langchain/chat_models/openai";
+import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { BaseMessageChunk } from "langchain/schema";
+
+// Add this check to ensure the API key exists
+// if (!process.env.OPENAI_API_KEY) {
+//   throw new Error('Missing OpenAI API Key');
+// }
 
 const model = new ChatOpenAI({
-  modelName: "gpt-4o-mini",
+  modelName: "gpt-4",
   temperature: 0.7,
-  openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || process.env.OPENAI_API_KEY,
 });
 
 const systemMessage = new SystemMessage(
@@ -19,15 +23,7 @@ export async function getAgentResponse(message: string): Promise<string> {
       new HumanMessage(message)
     ]);
     
-    // Ensure we return a string
-    if (typeof response.content === 'string') {
-      return response.content;
-    } else if (Array.isArray(response.content)) {
-      return response.content.map(c => 
-        typeof c === 'string' ? c : JSON.stringify(c)
-      ).join(' ');
-    }
-    return String(response.content);
+    return response.content as string;
   } catch (error) {
     console.error('Error in agent:', error);
     return "I apologize, but I'm having trouble processing your request right now.";
@@ -37,9 +33,9 @@ export async function getAgentResponse(message: string): Promise<string> {
 // Add this function to generate titles
 export async function generateTitle(message: string): Promise<string> {
   const titleModel = new ChatOpenAI({
-    modelName: "gpt-4o-mini",
+    modelName: "gpt-4",
     temperature: 0.7,
-    openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+    openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || process.env.OPENAI_API_KEY,
   });
 
   const titleSystemMessage = new SystemMessage(
