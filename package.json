@@ -1,0 +1,36 @@
+{
+  "dependencies": {
+    "@firebase/auth": "^1.9.0",
+    "@firebase/database": "^1.0.1",
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.0.18",
+    "@langchain/core": "^0.1.63",
+    "@langchain/langgraph": "^0.0.8",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0-rc.12",
+    "firebase": "^11.3.1",
+    "google-auth-library": "^8.9.0",
+    "langchain": "^0.1.37",
+    "next": "^14.0.0",
+    "openai": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-firebase-hooks": "^5.1.1",
+    "react-textarea-autosize": "^8.5.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  }
+}
