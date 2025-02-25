@@ -58,14 +58,14 @@ export default function Home() {
             </div>
           ) : (
             <div className="h-full flex flex-col">
-              <div className="hidden md:block bg-white rounded-xl shadow-sm p-6 mb-6">
+              {/* <div className="hidden md:block bg-white rounded-xl shadow-sm p-6 mb-6">
                 <p className="text-[#657786] text-lg">
                   Welcome! Ask me anything about the Nigerian Constitution and
                   legal matters. I'm here to help you understand your rights and
                   responsibilities.
                 </p>
-              </div>
-              <div className="flex-1 h-full">
+              </div> */}
+              <div className="flex-1 h-[calc(100vh-64px)] md:h-full">
                 <Chat />
               </div>
             </div>

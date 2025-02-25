@@ -101,12 +101,30 @@ export default function Chat() {
     }
   }, [messages]);
 
+  // First, update the scroll behavior after sending a message
+  useEffect(() => {
+    if (chatContainerRef.current && messages.length > 0) {
+      const scrollOptions = {
+        behavior: 'smooth' as ScrollBehavior,
+        block: 'end'
+      };
+      
+      // Create a small delay to ensure the new message is rendered
+      setTimeout(() => {
+        chatContainerRef.current?.scrollTo({
+          top: chatContainerRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+  }, [messages]);
+
   const createNewSession = async () => {
     if (!user) return;
     
     const sessionsRef = ref(db, 'chatSessions');
     const newSession = await push(sessionsRef, {
-      title: 'New Chat',
+      title: 'Chat ' + Date.now(),
       lastMessage: '',
       timestamp: Date.now(),
       userId: user.uid,
@@ -240,9 +258,9 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
       {/* Mobile Header */}
-      <div className="md:hidden sticky top-0 z-40 bg-white border-b border-[#E1E8ED] px-4 py-3 flex items-center justify-between">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-[#E1E8ED] px-4 py-3 flex items-center justify-between">
         <Menu as="div" className="relative">
           <Menu.Button className="p-2 hover:bg-gray-100 rounded-lg">
             <Bars3Icon className="w-6 h-6 text-[#008751]" />
@@ -267,9 +285,6 @@ export default function Chat() {
                   <p className="text-sm text-gray-500">{user?.email}</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                Welcome! Ask me anything about the Nigerian Constitution and legal matters. I'm here to help you understand your rights and responsibilities.
-              </p>
             </div>
 
             {/* Actions Section */}
@@ -349,14 +364,15 @@ export default function Chat() {
         <div className="w-10 h-10" />
       </div>
 
-      <div className="flex flex-1 h-full overflow-hidden">
+      {/* Main content */}
+      <div className="flex flex-1 h-full pt-[56px] md:pt-0">
         {/* Sidebar */}
         <div className={`
           fixed md:relative w-[85vw] md:w-72 
-          h-full bg-white flex flex-col
+          h-[calc(100%-56px)] md:h-full bg-white flex flex-col
           transform transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          z-50 md:z-auto
+          z-50 md:z-auto top-[56px] md:top-0
         `}>
           <div className="hidden md:block p-4 border-b border-[#E1E8ED] bg-gradient-to-r from-[#008751] to-[#00A86B]">
             <button
@@ -428,19 +444,23 @@ export default function Chat() {
         </div>
 
         {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col h-full bg-white">
+        <div className="flex-1 flex flex-col h-full">
+          {/* Messages Container */}
           <div 
             ref={chatContainerRef}
-            className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-[#F5F8FA]"
+            className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent bg-chat-pattern"
           >
             {currentSessionId ? (
-              <div className="space-y-6">
-                {messages.map((message) => (
+              <div className="flex flex-col space-y-4 p-4 md:p-6 pb-20">
+                {messages.map((message, index) => (
                   <div
                     key={message.id}
                     className={`flex items-start gap-3 ${
                       message.role === 'user' ? 'flex-row-reverse' : ''
-                    }`}
+                    } animate-fade-in`}
+                    style={{
+                      animationDelay: `${index * 0.1}s`
+                    }}
                   >
                     <div className="flex-shrink-0">
                       {message.role === 'user' ? (
@@ -460,14 +480,16 @@ export default function Chat() {
                       )}
                     </div>
                     <div
-                      className={`max-w-[70%] rounded-2xl px-6 py-3 ${
+                      className={`max-w-[80%] md:max-w-[70%] rounded-2xl px-4 py-2 shadow-sm hover:shadow-md transition-shadow ${
                         message.role === 'user'
-                          ? 'bg-[#008751] text-white'
-                          : 'bg-white border border-[#E1E8ED]'
+                          ? 'bg-[#008751] text-white ml-auto hover:bg-[#007544]'
+                          : 'bg-white border border-[#E1E8ED] hover:bg-gray-50'
                       }`}
                     >
-                      <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                      <p className="text-xs mt-2 opacity-70">
+                      <p className="text-[15px] leading-relaxed whitespace-pre-wrap break-words">
+                        {message.content}
+                      </p>
+                      <p className="text-xs mt-1 opacity-70">
                         {formatTimestamp(message.timestamp)}
                       </p>
                     </div>
@@ -475,41 +497,44 @@ export default function Chat() {
                 ))}
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center">
+              <div className="h-full flex items-center justify-center p-4">
                 <div className="text-center">
                   <ChatBubbleLeftIcon className="w-16 h-16 text-[#008751] opacity-20 mx-auto mb-4" />
-                  <p>Select a chat or create a new one to start</p>
+                  <p className="text-gray-500">Select a chat or create a new one to start</p>
                 </div>
               </div>
             )}
           </div>
 
+          {/* Input Area - Fixed at bottom */}
           {currentSessionId && (
-            <div className="sticky bottom-0 bg-white border-t border-[#E1E8ED] p-3 md:p-4">
-              <form onSubmit={handleSubmit} className="flex items-end gap-2">
-                <TextareaAutosize
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSubmit();
-                    }
-                  }}
-                  placeholder="Ask about the Nigerian Constitution..."
-                  className="flex-1 px-4 py-2 rounded-xl border border-[#E1E8ED] focus:outline-none focus:border-[#008751] focus:ring-1 focus:ring-[#008751] text-[15px] max-h-32 min-h-[45px] resize-none"
-                  disabled={isLoading || !user}
-                  minRows={1}
-                  maxRows={5}
-                />
-                <button
-                  type="submit"
-                  disabled={isLoading || !user || !input.trim()}
-                  className="p-2 rounded-full bg-[#008751] text-white hover:bg-opacity-90 transition-colors disabled:bg-opacity-50"
-                >
-                  <PaperAirplaneIcon className="h-5 w-5" />
-                </button>
-              </form>
+            <div className="fixed bottom-0 left-0 right-0 md:left-72 bg-white border-t border-[#E1E8ED] p-3 md:p-4">
+              <div className="max-w-3xl mx-auto">
+                <form onSubmit={handleSubmit} className="flex items-end gap-2">
+                  <TextareaAutosize
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSubmit();
+                      }
+                    }}
+                    placeholder="Ask about the Nigerian Constitution..."
+                    className="flex-1 px-4 py-2 rounded-xl border border-[#E1E8ED] focus:outline-none focus:border-[#008751] focus:ring-1 focus:ring-[#008751] text-[15px] max-h-32 min-h-[45px] resize-none bg-white"
+                    disabled={isLoading || !user}
+                    minRows={1}
+                    maxRows={5}
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading || !user || !input.trim()}
+                    className="p-2 rounded-full bg-[#008751] text-white hover:bg-opacity-90 transition-colors disabled:bg-opacity-50"
+                  >
+                    <PaperAirplaneIcon className="h-5 w-5" />
+                  </button>
+                </form>
+              </div>
             </div>
           )}
         </div>

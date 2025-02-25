@@ -52,12 +52,19 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.3s ease-out forwards;
+  opacity: 0;
 }
 
 @media (max-width: 768px) {
@@ -67,4 +74,22 @@
     inset: 0;
     z-index: 30;
   }
+}
+
+/* Add chat background pattern */
+.bg-chat-pattern {
+  background-color: #f5f8fa;
+  background-image: radial-gradient(#008751 0.5px, transparent 0.5px), radial-gradient(#008751 0.5px, #f5f8fa 0.5px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  background-opacity: 0.1;
+}
+
+/* Add hover effects */
+.message-bubble {
+  transition: all 0.2s ease-in-out;
+}
+
+.message-bubble:hover {
+  transform: translateY(-1px);
 } 
