@@ -6,13 +6,11 @@ export default function Home() {
   const { user, signInWithGoogle, logout } = useAuth();
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F5F8FA]">
+    <div className="flex flex-col h-screen bg-[#F5F8FA]">
       <Head>
         <title>Nigerian Constitution AI Chat</title>
-        <meta
-          name="description"
-          content="AI-powered chat application for understanding the Nigerian Constitution"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <meta name="description" content="AI-powered chat application for understanding the Nigerian Constitution" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -43,10 +41,11 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-grow flex md:container md:mx-auto md:px-4 md:py-6">
-        <div className="w-full md:max-w-3xl md:mx-auto">
+      {/* Main content - adjust padding and height for mobile */}
+      <main className="flex-1 flex w-full h-full overflow-hidden">
+        <div className="w-full h-full">
           {!user ? (
-            <div className="bg-white rounded-xl shadow-sm p-6 text-center m-4">
+            <div className="bg-white md:rounded-xl shadow-sm p-6 text-center m-0 md:m-4 h-full flex flex-col items-center justify-center">
               <p className="text-[#657786] text-lg mb-6">
                 Please sign in to start chatting about the Nigerian Constitution
               </p>
@@ -58,7 +57,7 @@ export default function Home() {
               </button>
             </div>
           ) : (
-            <>
+            <div className="h-full flex flex-col">
               <div className="hidden md:block bg-white rounded-xl shadow-sm p-6 mb-6">
                 <p className="text-[#657786] text-lg">
                   Welcome! Ask me anything about the Nigerian Constitution and
@@ -66,10 +65,10 @@ export default function Home() {
                   responsibilities.
                 </p>
               </div>
-              <div className="h-full md:h-auto">
+              <div className="flex-1 h-full">
                 <Chat />
               </div>
-            </>
+            </div>
           )}
         </div>
       </main>

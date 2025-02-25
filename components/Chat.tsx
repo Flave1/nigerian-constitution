@@ -240,279 +240,278 @@ export default function Chat() {
   };
 
   return (
-    <>
-      <div className="flex flex-col h-screen md:h-[70vh] relative bg-white md:rounded-xl md:shadow-lg md:border md:border-[#E1E8ED]">
-        {/* Mobile Header */}
-        <div className="md:hidden sticky top-0 z-40 bg-white border-b border-[#E1E8ED] px-4 py-3 flex items-center justify-between">
-          <Menu as="div" className="relative">
-            <Menu.Button className="p-2 hover:bg-gray-100 rounded-lg">
-              <Bars3Icon className="w-6 h-6 text-[#008751]" />
-            </Menu.Button>
-            <Menu.Items className="absolute left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-[#E1E8ED] divide-y divide-gray-100">
-              {/* User Info Section */}
-              <div className="p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  {user?.photoURL ? (
-                    <img
-                      src={user.photoURL}
-                      alt={user.displayName || 'User'}
-                      className="w-10 h-10 rounded-full"
-                    />
-                  ) : (
-                    <UserIcon className="w-10 h-10 p-2 bg-[#008751] text-white rounded-full" />
-                  )}
-                  <div>
-                    <h3 className="font-medium text-gray-900">
-                      {user?.displayName || 'User'}
-                    </h3>
-                    <p className="text-sm text-gray-500">{user?.email}</p>
-                  </div>
+    <div className="flex flex-col h-full">
+      {/* Mobile Header */}
+      <div className="md:hidden sticky top-0 z-40 bg-white border-b border-[#E1E8ED] px-4 py-3 flex items-center justify-between">
+        <Menu as="div" className="relative">
+          <Menu.Button className="p-2 hover:bg-gray-100 rounded-lg">
+            <Bars3Icon className="w-6 h-6 text-[#008751]" />
+          </Menu.Button>
+          <Menu.Items className="absolute left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-[#E1E8ED] divide-y divide-gray-100">
+            {/* User Info Section */}
+            <div className="p-4">
+              <div className="flex items-center gap-3 mb-3">
+                {user?.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || 'User'}
+                    className="w-10 h-10 rounded-full"
+                  />
+                ) : (
+                  <UserIcon className="w-10 h-10 p-2 bg-[#008751] text-white rounded-full" />
+                )}
+                <div>
+                  <h3 className="font-medium text-gray-900">
+                    {user?.displayName || 'User'}
+                  </h3>
+                  <p className="text-sm text-gray-500">{user?.email}</p>
                 </div>
-                <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                  Welcome! Ask me anything about the Nigerian Constitution and legal matters. I'm here to help you understand your rights and responsibilities.
-                </p>
               </div>
-
-              {/* Actions Section */}
-              <div className="py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={createNewSession}
-                      className={`${
-                        active ? 'bg-gray-50' : ''
-                      } flex w-full items-center px-4 py-3 text-sm text-gray-700`}
-                    >
-                      <PlusIcon className="w-5 h-5 mr-3" />
-                      New Chat
-                    </button>
-                  )}
-                </Menu.Item>
-
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={() => setIsSidebarOpen(true)}
-                      className={`${
-                        active ? 'bg-gray-50' : ''
-                      } flex w-full items-center px-4 py-3 text-sm text-gray-700`}
-                    >
-                      <ChatBubbleLeftIcon className="w-5 h-5 mr-3" />
-                      Chat History
-                    </button>
-                  )}
-                </Menu.Item>
-              </div>
-
-              {/* Settings Section */}
-              <div className="py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={() => {/* Add settings handler */}}
-                      className={`${
-                        active ? 'bg-gray-50' : ''
-                      } flex w-full items-center px-4 py-3 text-sm text-gray-700`}
-                    >
-                      <Cog6ToothIcon className="w-5 h-5 mr-3" />
-                      Settings
-                    </button>
-                  )}
-                </Menu.Item>
-              </div>
-
-              {/* Sign Out Section */}
-              <div className="py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={() => logout()}
-                      className={`${
-                        active ? 'bg-gray-50' : ''
-                      } flex w-full items-center px-4 py-3 text-sm text-red-600`}
-                    >
-                      <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-3" />
-                      Sign Out
-                    </button>
-                  )}
-                </Menu.Item>
-              </div>
-            </Menu.Items>
-          </Menu>
-          
-          <h1 className="text-lg font-semibold text-[#008751] truncate max-w-[200px]">
-            {currentSessionId 
-              ? sessions.find(s => s.id === currentSessionId)?.title || 'Chat'
-              : 'Nigerian Constitution AI'
-            }
-          </h1>
-
-          <div className="w-10 h-10" />
-        </div>
-
-        <div className="flex flex-1 overflow-hidden">
-          {/* Sidebar */}
-          <div className={`
-            fixed md:relative w-[85vw] md:w-72 bg-white flex flex-col
-            transform transition-transform duration-300 ease-in-out
-            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-            h-screen md:h-full z-50 md:z-auto
-          `}>
-            <div className="hidden md:block p-4 border-b border-[#E1E8ED] bg-gradient-to-r from-[#008751] to-[#00A86B]">
-              <button
-                onClick={createNewSession}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white text-[#008751] rounded-lg hover:bg-opacity-90 transition-all transform hover:scale-[1.02] shadow-md"
-              >
-                <PlusIcon className="w-5 h-5" />
-                <span className="font-medium">New Chat</span>
-              </button>
+              <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                Welcome! Ask me anything about the Nigerian Constitution and legal matters. I'm here to help you understand your rights and responsibilities.
+              </p>
             </div>
 
-            {/* Mobile Sidebar Header */}
-            <div className="md:hidden p-4 bg-gradient-to-r from-[#008751] to-[#00A86B] flex items-center justify-between">
-              <h2 className="text-white font-semibold">Chat History</h2>
-              <button
-                onClick={() => setIsSidebarOpen(false)}
-                className="p-1 rounded-lg hover:bg-white/10"
-              >
-                <XMarkIcon className="w-6 h-6 text-white" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto custom-scrollbar bg-gradient-to-b from-white to-[#F5F8FA]">
-              {sessions.map((session) => (
-                <div
-                  key={session.id}
-                  className={`relative group w-full p-4 text-left hover:bg-white transition-all duration-200 border-b border-[#E1E8ED] ${
-                    currentSessionId === session.id 
-                      ? 'bg-white shadow-md transform scale-[1.02]' 
-                      : 'hover:transform hover:scale-[1.01]'
-                  }`}
-                >
+            {/* Actions Section */}
+            <div className="py-1">
+              <Menu.Item>
+                {({ active }) => (
                   <button
-                    onClick={() => setCurrentSessionId(session.id)}
-                    className="w-full text-left"
+                    onClick={createNewSession}
+                    className={`${
+                      active ? 'bg-gray-50' : ''
+                    } flex w-full items-center px-4 py-3 text-sm text-gray-700`}
                   >
-                    <div className="flex items-center gap-3 mb-2">
-                      <ChatBubbleLeftIcon className="w-5 h-5 text-[#008751]" />
-                      <h3 className="font-medium text-[#15202B] truncate">
-                        {session.title}
-                      </h3>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <ClockIcon className="w-4 h-4" />
-                      <span>{formatTimestamp(session.timestamp)}</span>
-                    </div>
+                    <PlusIcon className="w-5 h-5 mr-3" />
+                    New Chat
                   </button>
-                  
-                  {/* Delete Button */}
+                )}
+              </Menu.Item>
+
+              <Menu.Item>
+                {({ active }) => (
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeletingSession({id: session.id, title: session.title});
-                    }}
-                    className={`
-                      absolute right-2 top-1/2 -translate-y-1/2
-                      p-2 rounded-full
-                      opacity-0 group-hover:opacity-100
-                      transition-opacity duration-200
-                      hover:bg-red-50
-                      ${isDeleting === session.id ? 'cursor-wait' : 'hover:text-red-600'}
-                    `}
+                    onClick={() => setIsSidebarOpen(true)}
+                    className={`${
+                      active ? 'bg-gray-50' : ''
+                    } flex w-full items-center px-4 py-3 text-sm text-gray-700`}
                   >
-                    <TrashIcon className="w-5 h-5" />
+                    <ChatBubbleLeftIcon className="w-5 h-5 mr-3" />
+                    Chat History
                   </button>
-                </div>
-              ))}
+                )}
+              </Menu.Item>
             </div>
+
+            {/* Settings Section */}
+            <div className="py-1">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    onClick={() => {/* Add settings handler */}}
+                    className={`${
+                      active ? 'bg-gray-50' : ''
+                    } flex w-full items-center px-4 py-3 text-sm text-gray-700`}
+                  >
+                    <Cog6ToothIcon className="w-5 h-5 mr-3" />
+                    Settings
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+
+            {/* Sign Out Section */}
+            <div className="py-1">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    onClick={() => logout()}
+                    className={`${
+                      active ? 'bg-gray-50' : ''
+                    } flex w-full items-center px-4 py-3 text-sm text-red-600`}
+                  >
+                    <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-3" />
+                    Sign Out
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+          </Menu.Items>
+        </Menu>
+        
+        <h1 className="text-lg font-semibold text-[#008751] truncate max-w-[200px]">
+          {currentSessionId 
+            ? sessions.find(s => s.id === currentSessionId)?.title || 'Chat'
+            : 'Nigerian Constitution AI'
+          }
+        </h1>
+
+        <div className="w-10 h-10" />
+      </div>
+
+      <div className="flex flex-1 h-full overflow-hidden">
+        {/* Sidebar */}
+        <div className={`
+          fixed md:relative w-[85vw] md:w-72 
+          h-full bg-white flex flex-col
+          transform transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          z-50 md:z-auto
+        `}>
+          <div className="hidden md:block p-4 border-b border-[#E1E8ED] bg-gradient-to-r from-[#008751] to-[#00A86B]">
+            <button
+              onClick={createNewSession}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white text-[#008751] rounded-lg hover:bg-opacity-90 transition-all transform hover:scale-[1.02] shadow-md"
+            >
+              <PlusIcon className="w-5 h-5" />
+              <span className="font-medium">New Chat</span>
+            </button>
           </div>
 
-          {/* Main Chat Area */}
-          <div className="flex-1 flex flex-col bg-white overflow-hidden">
-            <div 
-              ref={chatContainerRef}
-              className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-[#F5F8FA] custom-scrollbar"
+          {/* Mobile Sidebar Header */}
+          <div className="md:hidden p-4 bg-gradient-to-r from-[#008751] to-[#00A86B] flex items-center justify-between">
+            <h2 className="text-white font-semibold">Chat History</h2>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-1 rounded-lg hover:bg-white/10"
             >
-              {currentSessionId ? (
-                <div className="space-y-6">
-                  {messages.map((message) => (
+              <XMarkIcon className="w-6 h-6 text-white" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto custom-scrollbar bg-gradient-to-b from-white to-[#F5F8FA]">
+            {sessions.map((session) => (
+              <div
+                key={session.id}
+                className={`relative group w-full p-4 text-left hover:bg-white transition-all duration-200 border-b border-[#E1E8ED] ${
+                  currentSessionId === session.id 
+                    ? 'bg-white shadow-md transform scale-[1.02]' 
+                    : 'hover:transform hover:scale-[1.01]'
+                }`}
+              >
+                <button
+                  onClick={() => setCurrentSessionId(session.id)}
+                  className="w-full text-left"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <ChatBubbleLeftIcon className="w-5 h-5 text-[#008751]" />
+                    <h3 className="font-medium text-[#15202B] truncate">
+                      {session.title}
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <ClockIcon className="w-4 h-4" />
+                    <span>{formatTimestamp(session.timestamp)}</span>
+                  </div>
+                </button>
+                
+                {/* Delete Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeletingSession({id: session.id, title: session.title});
+                  }}
+                  className={`
+                    absolute right-2 top-1/2 -translate-y-1/2
+                    p-2 rounded-full
+                    opacity-0 group-hover:opacity-100
+                    transition-opacity duration-200
+                    hover:bg-red-50
+                    ${isDeleting === session.id ? 'cursor-wait' : 'hover:text-red-600'}
+                  `}
+                >
+                  <TrashIcon className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Main Chat Area */}
+        <div className="flex-1 flex flex-col h-full bg-white">
+          <div 
+            ref={chatContainerRef}
+            className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-[#F5F8FA]"
+          >
+            {currentSessionId ? (
+              <div className="space-y-6">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex items-start gap-3 ${
+                      message.role === 'user' ? 'flex-row-reverse' : ''
+                    }`}
+                  >
+                    <div className="flex-shrink-0">
+                      {message.role === 'user' ? (
+                        user?.photoURL ? (
+                          <img
+                            src={user.photoURL}
+                            alt={user.displayName || 'User'}
+                            className="w-10 h-10 rounded-full"
+                          />
+                        ) : (
+                          <UserCircleIcon className="w-10 h-10 text-[#008751]" />
+                        )
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-[#008751] flex items-center justify-center text-white font-bold">
+                          AI
+                        </div>
+                      )}
+                    </div>
                     <div
-                      key={message.id}
-                      className={`flex items-start gap-3 ${
-                        message.role === 'user' ? 'flex-row-reverse' : ''
+                      className={`max-w-[70%] rounded-2xl px-6 py-3 ${
+                        message.role === 'user'
+                          ? 'bg-[#008751] text-white'
+                          : 'bg-white border border-[#E1E8ED]'
                       }`}
                     >
-                      <div className="flex-shrink-0">
-                        {message.role === 'user' ? (
-                          user?.photoURL ? (
-                            <img
-                              src={user.photoURL}
-                              alt={user.displayName || 'User'}
-                              className="w-10 h-10 rounded-full"
-                            />
-                          ) : (
-                            <UserCircleIcon className="w-10 h-10 text-[#008751]" />
-                          )
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-[#008751] flex items-center justify-center text-white font-bold">
-                            AI
-                          </div>
-                        )}
-                      </div>
-                      <div
-                        className={`max-w-[70%] rounded-2xl px-6 py-3 ${
-                          message.role === 'user'
-                            ? 'bg-[#008751] text-white'
-                            : 'bg-white border border-[#E1E8ED]'
-                        }`}
-                      >
-                        <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                        <p className="text-xs mt-2 opacity-70">
-                          {formatTimestamp(message.timestamp)}
-                        </p>
-                      </div>
+                      <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-xs mt-2 opacity-70">
+                        {formatTimestamp(message.timestamp)}
+                      </p>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="h-full flex items-center justify-center">
-                  <div className="text-center">
-                    <ChatBubbleLeftIcon className="w-16 h-16 text-[#008751] opacity-20 mx-auto mb-4" />
-                    <p>Select a chat or create a new one to start</p>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                  <ChatBubbleLeftIcon className="w-16 h-16 text-[#008751] opacity-20 mx-auto mb-4" />
+                  <p>Select a chat or create a new one to start</p>
                 </div>
-              )}
-            </div>
-
-            {currentSessionId && (
-              <div className="sticky bottom-0 bg-white border-t border-[#E1E8ED] p-3 md:p-4">
-                <form onSubmit={handleSubmit} className="flex items-end gap-2">
-                  <TextareaAutosize
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSubmit();
-                      }
-                    }}
-                    placeholder="Ask about the Nigerian Constitution..."
-                    className="flex-1 px-4 py-2 rounded-xl border border-[#E1E8ED] focus:outline-none focus:border-[#008751] focus:ring-1 focus:ring-[#008751] text-[15px] max-h-32 min-h-[45px] resize-none"
-                    disabled={isLoading || !user}
-                    minRows={1}
-                    maxRows={5}
-                  />
-                  <button
-                    type="submit"
-                    disabled={isLoading || !user || !input.trim()}
-                    className="p-2 rounded-full bg-[#008751] text-white hover:bg-opacity-90 transition-colors disabled:bg-opacity-50"
-                  >
-                    <PaperAirplaneIcon className="h-5 w-5" />
-                  </button>
-                </form>
               </div>
             )}
           </div>
+
+          {currentSessionId && (
+            <div className="sticky bottom-0 bg-white border-t border-[#E1E8ED] p-3 md:p-4">
+              <form onSubmit={handleSubmit} className="flex items-end gap-2">
+                <TextareaAutosize
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSubmit();
+                    }
+                  }}
+                  placeholder="Ask about the Nigerian Constitution..."
+                  className="flex-1 px-4 py-2 rounded-xl border border-[#E1E8ED] focus:outline-none focus:border-[#008751] focus:ring-1 focus:ring-[#008751] text-[15px] max-h-32 min-h-[45px] resize-none"
+                  disabled={isLoading || !user}
+                  minRows={1}
+                  maxRows={5}
+                />
+                <button
+                  type="submit"
+                  disabled={isLoading || !user || !input.trim()}
+                  className="p-2 rounded-full bg-[#008751] text-white hover:bg-opacity-90 transition-colors disabled:bg-opacity-50"
+                >
+                  <PaperAirplaneIcon className="h-5 w-5" />
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       </div>
 
@@ -589,6 +588,6 @@ export default function Chat() {
           </div>
         </Dialog>
       </Transition>
-    </>
+    </div>
   );
 } 
